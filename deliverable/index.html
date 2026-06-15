@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0D0D0D" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Gym Recomendador</title>
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0D0D0D;
+      color: #FFFFFF;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ─── Header ────────────────────────────────────────────── */
+    .header {
+      padding: 48px 20px 16px;
+      background: linear-gradient(180deg, #1A1A2E 0%, #0D0D0D 100%);
+    }
+    .header h1 { font-size: 28px; font-weight: 800; }
+    .header h1 span { color: #E63946; }
+    .header p { color: #888; font-size: 15px; margin-top: 4px; }
+
+    /* ─── Chip selector ─────────────────────────────────────── */
+    .chip-container {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #0D0D0D;
+    }
+    .chip-container::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      border-radius: 25px;
+      background: #1A1A2E;
+      border: 1px solid #2A2A3E;
+      color: #AAA;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .chip:active { transform: scale(0.95); }
+    .chip.active {
+      background: #E63946;
+      border-color: #E63946;
+      color: #FFF;
+    }
+
+    /* ─── Exercise list ─────────────────────────────────────── */
+    .lista {
+      padding: 12px 16px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .empty-state .emoji { font-size: 60px; margin-bottom: 16px; }
+    .empty-state p { color: #666; font-size: 16px; line-height: 1.6; }
+
+    .card {
+      background: #1A1A2E;
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid #2A2A3E;
+      transition: transform 0.15s, box-shadow 0.15s;
+      animation: fadeIn 0.3s ease;
+    }
+    .card:active { transform: scale(0.98); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .card-emoji { font-size: 32px; }
+    .card-info { flex: 1; }
+    .card-nombre { font-size: 17px; font-weight: 700; }
+    .card-series { color: #E63946; font-size: 13px; font-weight: 600; margin-top: 2px; }
+    .card-desc { color: #999; font-size: 14px; line-height: 1.5; margin-top: 4px; }
+
+    /* ─── Bottom Nav ────────────────────────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1A1A2E;
+      border-top: 1px solid #2A2A3E;
+      padding: 8px 16px 20px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-btn span { font-size: 20px; }
+    .nav-btn.active { color: #E63946; }
+
+    /* ─── Routines Tab ──────────────────────────────────────── */
+    .section { display: none; }
+    .section.active { display: flex; flex-direction: column; }
+
+    .rutina-card {
+      background: linear-gradient(135deg, #1A1A2E, #16213E);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #2A2A3E;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .rutina-card:active { transform: scale(0.98); }
+    .rutina-card h3 { font-size: 18px; margin-bottom: 4px; }
+    .rutina-card .meta {
+      color: #888;
+      font-size: 13px;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .rutina-card .preview { color: #AAA; font-size: 14px; line-height: 1.5; }
+
+    /* ─── Modal ─────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-content {
+      background: #1A1A2E;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 24px 20px 32px;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-content h2 { font-size: 22px; margin-bottom: 16px; }
+    .modal-ejercicio {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #2A2A3E;
+    }
+    .modal-ejercicio:last-child { border-bottom: none; }
+    .modal-ejercicio .e-nombre { font-weight: 600; font-size: 15px; }
+    .modal-ejercicio .e-series { color: #E63946; font-size: 13px; }
+    .modal-close {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: #E63946;
+      color: #FFF;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .modal-close:active { opacity: 0.8; }
+
+    /* ─── Responsive ────────────────────────────────────────── */
+    @media (min-width: 500px) {
+      .lista, .chip-container, .header { max-width: 500px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🏋️ Gym <span>Recomendador</span></h1>
+    <p>Tu entrenador personal de bolsillo</p>
+  </div>
+
+  <!-- Chip selector -->
+  <div class="chip-container" id="chipContainer"></div>
+
+  <!-- Content Area -->
+  <div class="lista" id="listaContainer"></div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-section="ejercicios" onclick="showSection('ejercicios')">
+      <span>💪</span> Ejercicios
+    </button>
+    <button class="nav-btn" data-section="rutinas" onclick="showSection('rutinas')">
+      <span>📋</span> Rutinas
+    </button>
+    <button class="nav-btn" data-section="info" onclick="showSection('info')">
+      <span>ℹ️</span> Info
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-content" id="modalContent">
+      <h2 id="modalTitle">Rutina</h2>
+      <div id="modalBody"></div>
+      <button class="modal-close" onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registered'))
+        .catch(() => {});
+    }
+  </script>
+
+  <!-- Main App -->
+  <script>
+    // ─── Base de datos de ejercicios ─────────────────────────
+    const EJERCICIOS = {
+      Pecho: [
+        { nombre: 'Press banca con barra', sets: '4', reps: '8-12', desc: 'Acuéstate en el banco, baja la barra al pecho y empuja hacia arriba.', emoji: '🏋️' },
+        { nombre: 'Press inclinado con mancuernas', sets: '4', reps: '8-12', desc: 'Banco a 45°, baja las mancuernas al pecho y sube.', emoji: '🏋️' },
+        { nombre: 'Aperturas con mancuernas', sets: '3', reps: '12-15', desc: 'Acuéstate en banco plano, brazos abiertos y junta las mancuernas.', emoji: '🤲' },
+        { nombre: 'Fondos en paralelas', sets: '3', reps: '8-15', desc: 'Sujétate en las paralelas, baja flexionando brazos y sube.', emoji: '💪' },
+        { nombre: 'Press declinado con barra', sets: '4', reps: '8-12', desc: 'Banco declinado, enfoca el esfuerzo en el pecho inferior.', emoji: '🏋️' },
+      ],
+      Espalda: [
+        { nombre: 'Dominadas (Pull-ups)', sets: '4', reps: '6-12', desc: 'Agarre prono, sube hasta que la barbilla pase la barra.', emoji: '🤸' },
+        { nombre: 'Remo con barra', sets: '4', reps: '8-12', desc: 'Inclínate hacia adelante, lleva la barra al abdomen.', emoji: '🏋️' },
+        { nombre: 'Jalón al pecho (Lat pulldown)', sets: '4', reps: '10-12', desc: 'En polea alta, lleva la barra al pecho con agarre ancho.', emoji: '⬇️' },
+        { nombre: 'Remo con mancuerna', sets: '3', reps: '10-12', desc: 'Apoya rodilla y mano en banco, rema con la mancuerna.', emoji: '🦾' },
+        { nombre: 'Peso muerto', sets: '4', reps: '6-8', desc: 'Barra en el suelo, espalda recta, levántala extendiendo caderas.', emoji: '🏋️' },
+      ],
+      Piernas: [
+        { nombre: 'Sentadilla (Squat)', sets: '4', reps: '8-12', desc: 'Barra en trapecios, baja hasta paralela y sube.', emoji: '🦵' },
+        { nombre: 'Prensa de piernas', sets: '4', reps: '10-15', desc: 'Empuja la plataforma sin bloquear rodillas.', emoji: '🦿' },
+        { nombre: 'Peso muerto rumano', sets: '4', reps: '8-12', desc: 'Cadera atrás, baja la barra deslizándola por las piernas.', emoji: '🏋️' },
+        { nombre: 'Extensiones de pierna', sets: '3', reps: '12-15', desc: 'Máquina de cuádriceps, extiende las piernas completamente.', emoji: '🦵' },
+        { nombre: 'Curl femoral', sets: '3', reps: '12-15', desc: 'Máquina de isquiotibiales, flexiona piernas hacia el glúteo.', emoji: '🦵' },
+      ],
+      Hombros: [
+        { nombre: 'Press militar con barra', sets: '4', reps: '8-12', desc: 'Barra al frente del mentón, empuja hacia arriba.', emoji: '🏋️' },
+        { nombre: 'Elevaciones laterales', sets: '3', reps: '12-15', desc: 'Mancuernas a los lados, sube a la altura de los hombros.', emoji: '🤷' },
+        { nombre: 'Elevaciones frontales', sets: '3', reps: '12-15', desc: 'Mancuernas al frente, sube a la altura de los hombros.', emoji: '🙋' },
+        { nombre: 'Pájaros (Reverse fly)', sets: '3', reps: '12-15', desc: 'Inclinado, abre los brazos como alas.', emoji: '🦅' },
+        { nombre: 'Press Arnold', sets: '4', reps: '8-12', desc: 'Mancuernas al frente, gira mientras subes sobre la cabeza.', emoji: '🔄' },
+      ],
+      Bíceps: [
+        { nombre: 'Curl con barra', sets: '4', reps: '8-12', desc: 'Barra al frente, flexiona codos llevándola al pecho.', emoji: '💪' },
+        { nombre: 'Curl con mancuernas', sets: '3', reps: '10-12', desc: 'Alterna brazos flexionando hacia el hombro.', emoji: '💪' },
+        { nombre: 'Curl martillo', sets: '3', reps: '10-12', desc: 'Mancuernas en agarre neutro, flexiona hacia el hombro.', emoji: '🔨' },
+        { nombre: 'Curl predicador', sets: '3', reps: '10-12', desc: 'En banco predicador, curl con barra EZ.', emoji: '💪' },
+        { nombre: 'Curl concentrado', sets: '3', reps: '12-15', desc: 'Sentado, codo en el muslo, curl hacia el pecho.', emoji: '🎯' },
+      ],
+      Tríceps: [
+        { nombre: 'Press francés', sets: '4', reps: '8-12', desc: 'Acostado, barra EZ desde la frente extendiendo codos.', emoji: '🏋️' },
+        { nombre: 'Extensiones en polea', sets: '4', reps: '12-15', desc: 'Polea alta, empuja hacia abajo extendiendo codos.', emoji: '⬇️' },
+        { nombre: 'Fondos en banco', sets: '3', reps: '10-15', desc: 'Manos en un banco, baja y sube con los brazos.', emoji: '🪑' },
+        { nombre: 'Patada de tríceps', sets: '3', reps: '12-15', desc: 'Inclinado, lleva mancuernas atrás extendiendo codos.', emoji: '🦵' },
+        { nombre: 'Press banca agarre cerrado', sets: '4', reps: '8-12', desc: 'Agarre estrecho, press de banca enfocando tríceps.', emoji: '🏋️' },
+      ],
+      Abdominales: [
+        { nombre: 'Plancha (Plank)', sets: '3', reps: '30-60s', desc: 'Antebrazos y puntas, cuerpo recto como una tabla.', emoji: '📏' },
+        { nombre: 'Crunch', sets: '3', reps: '15-20', desc: 'Acostado boca arriba, eleva el torso contrayendo el abdomen.', emoji: '🧍' },
+        { nombre: 'Elevación de piernas', sets: '3', reps: '12-15', desc: 'Colgado o acostado, eleva piernas rectas.', emoji: '🦵' },
+        { nombre: 'Russian twist', sets: '3', reps: '12-15', desc: 'Sentado inclinado, gira torso con peso a cada lado.', emoji: '🔄' },
+        { nombre: 'Bicicleta', sets: '3', reps: '15-20', desc: 'Acostado, lleva codo a rodilla contraria alternando.', emoji: '🚴' },
+      ],
+    };
+
+    // ─── Rutinas predefinidas ────────────────────────────────
+    const RUTINAS = [
+      {
+        nombre: '🔥 Push (Empuje)',
+        dias: 'Lunes / Jueves',
+        desc: 'Pecho, hombros y tríceps — ideales para el torso.',
+        ejercicios: [
+          { musculo: 'Pecho', idx: 0 },
+          { musculo: 'Pecho', idx: 1 },
+          { musculo: 'Hombros', idx: 0 },
+          { musculo: 'Hombros', idx: 1 },
+          { musculo: 'Tríceps', idx: 0 },
+          { musculo: 'Tríceps', idx: 1 },
+        ]
+      },
+      {
+        nombre: '💪 Pull (Tracción)',
+        dias: 'Martes / Viernes',
+        desc: 'Espalda, bíceps y abdominales — densidad y forma.',
+        ejercicios: [
+          { musculo: 'Espalda', idx: 0 },
+          { musculo: 'Espalda', idx: 1 },
+          { musculo: 'Espalda', idx: 4 },
+          { musculo: 'Bíceps', idx: 0 },
+          { musculo: 'Bíceps', idx: 2 },
+          { musculo: 'Abdominales', idx: 0 },
+        ]
+      },
+      {
+        nombre: '🦵 Piernas + Core',
+        dias: 'Miércoles / Sábado',
+        desc: 'Piernas, glúteos y core — la base de todo.',
+        ejercicios: [
+          { musculo: 'Piernas', idx: 0 },
+          { musculo: 'Piernas', idx: 1 },
+          { musculo: 'Piernas', idx: 2 },
+          { musculo: 'Piernas', idx: 3 },
+          { musculo: 'Abdominales', idx: 2 },
+          { musculo: 'Abdominales', idx: 3 },
+        ]
+      },
+      {
+        nombre: '🎯 Full Body (Principiante)',
+        dias: 'Lunes / Miércoles / Viernes',
+        desc: 'Cuerpo completo para quienes empiezan.',
+        ejercicios: [
+          { musculo: 'Pecho', idx: 0 },
+          { musculo: 'Espalda', idx: 1 },
+          { musculo: 'Piernas', idx: 0 },
+          { musculo: 'Hombros', idx: 0 },
+          { musculo: 'Bíceps', idx: 1 },
+          { musculo: 'Tríceps', idx: 3 },
+        ]
+      },
+    ];
+
+    const MUSCULOS = Object.keys(EJERCICIOS);
+    let selectedMuscle = null;
+
+    // ─── Renderizar chips ────────────────────────────────────
+    function renderChips() {
+      const container = document.getElementById('chipContainer');
+      container.innerHTML = MUSCULOS.map(m =>
+        `<div class="chip${selectedMuscle === m ? ' active' : ''}" onclick="selectMuscle('${m}')">${m}</div>`
+      ).join('');
+    }
+
+    // ─── Seleccionar músculo ─────────────────────────────────
+    function selectMuscle(muscle) {
+      selectedMuscle = selectedMuscle === muscle ? null : muscle;
+      renderChips();
+      renderExercises();
+    }
+
+    // ─── Renderizar ejercicios ───────────────────────────────
+    function renderExercises() {
+      const container = document.getElementById('listaContainer');
+      if (!selectedMuscle) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="emoji">👆</div>
+            <p>Selecciona un grupo muscular arriba para ver los ejercicios recomendados</p>
+          </div>
+        `;
+        return;
+      }
+      const ejercicios = EJERCICIOS[selectedMuscle];
+      container.innerHTML = ejercicios.map((ej, i) => `
+        <div class="card" style="animation-delay: ${i * 0.05}s">
+          <div class="card-header">
+            <div class="card-emoji">${ej.emoji}</div>
+            <div class="card-info">
+              <div class="card-nombre">${ej.nombre}</div>
+              <div class="card-series">${ej.sets} series × ${ej.reps}</div>
+            </div>
+          </div>
+          <div class="card-desc">${ej.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    // ─── Mostrar sección ─────────────────────────────────────
+    function showSection(section) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.section === section));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+      const container = document.getElementById('listaContainer');
+
+      if (section === 'ejercicios') {
+        document.querySelector('.chip-container').style.display = 'flex';
+        renderExercises();
+      } else if (section === 'rutinas') {
+        document.querySelector('.chip-container').style.display = 'none';
+        container.innerHTML = RUTINAS.map((r, i) => `
+          <div class="rutina-card" onclick="showRutina(${i})">
+            <h3>${r.nombre}</h3>
+            <div class="meta">
+              <span>📅 ${r.dias}</span>
+              <span>🏋️ ${r.ejercicios.length} ejercicios</span>
+            </div>
+            <div class="preview">${r.desc}</div>
+          </div>
+        `).join('');
+      } else if (section === 'info') {
+        document.querySelector('.chip-container').style.display = 'none';
+        container.innerHTML = `
+          <div class="card" style="text-align:center;padding:32px 20px;">
+            <div style="font-size:48px;margin-bottom:12px;">🏋️</div>
+            <h3 style="margin-bottom:8px;">Gym Recomendador v1.0</h3>
+            <p style="color:#888;margin-bottom:16px;line-height:1.6;">
+              App para recomendar ejercicios de entrenamiento.
+              Selecciona un grupo muscular y obtén los mejores ejercicios
+              con series, repeticiones y descripción.
+            </p>
+            <hr style="border-color:#2A2A3E;margin:16px 0;" />
+            <p style="color:#666;font-size:13px;">
+              ⚡ 35+ ejercicios · 7 grupos musculares · 4 rutinas predefinidas<br/>
+              📲 Agrega a pantalla de inicio para usarla como app nativa
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // ─── Modal de rutina ─────────────────────────────────────
+    function showRutina(idx) {
+      const r = RUTINAS[idx];
+      document.getElementById('modalTitle').textContent = r.nombre;
+      document.getElementById('modalBody').innerHTML = r.ejercicios.map(e => {
+        const ej = EJERCICIOS[e.musculo][e.idx];
+        return `
+          <div class="modal-ejercicio">
+            <span style="font-size:24px;">${ej.emoji}</span>
+            <div style="flex:1;">
+              <div class="e-nombre">${ej.nombre}</div>
+              <div style="color:#666;font-size:12px;">${e.musculo}</div>
+            </div>
+            <div class="e-series">${ej.sets}×${ej.reps}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal(e) {
+      if (e && e.target !== document.getElementById('modalOverlay')) return;
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    // ─── Iniciar app ─────────────────────────────────────────
+    renderChips();
+    renderExercises();
+  </script>
+</body>
+</html>
