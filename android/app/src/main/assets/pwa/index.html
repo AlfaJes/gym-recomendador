@@ -124,9 +124,9 @@
       background: none;
       border: none;
       color: #888;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 8px 16px;
+      padding: 6px 10px;
       border-radius: 12px;
       cursor: pointer;
       display: flex;
@@ -135,6 +135,7 @@
       gap: 2px;
       transition: color 0.2s;
       -webkit-tap-highlight-color: transparent;
+      min-width: 60px;
     }
     .nav-btn span { font-size: 20px; }
     .nav-btn.active { color: #E63946; }
@@ -213,6 +214,199 @@
     }
     .modal-close:active { opacity: 0.8; }
 
+    /* ─── IA Section ────────────────────────────────────────── */
+    .ia-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 180px);
+      height: calc(100dvh - 180px);
+    }
+
+    .ia-chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ia-message {
+      max-width: 88%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.5;
+      animation: fadeIn 0.3s ease;
+      word-wrap: break-word;
+    }
+    .ia-message.user {
+      align-self: flex-end;
+      background: #E63946;
+      color: #FFF;
+      border-bottom-right-radius: 4px;
+    }
+    .ia-message.ai {
+      align-self: flex-start;
+      background: #1A1A2E;
+      border: 1px solid #2A2A3E;
+      border-bottom-left-radius: 4px;
+    }
+    .ia-message.ai strong { color: #E63946; }
+    .ia-message.ai ul, .ia-message.ai ol { 
+      padding-left: 20px; 
+      margin: 6px 0;
+    }
+    .ia-message.ai li { margin-bottom: 4px; }
+    .ia-message.ai p { margin-bottom: 8px; }
+    .ia-message.ai p:last-child { margin-bottom: 0; }
+
+    .ia-welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .ia-welcome .emoji { font-size: 48px; }
+    .ia-welcome h3 { font-size: 20px; color: #FFF; }
+    .ia-welcome p { color: #888; font-size: 14px; line-height: 1.6; max-width: 320px; }
+
+    .ia-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .ia-action-btn {
+      padding: 10px 18px;
+      border-radius: 25px;
+      background: #1A1A2E;
+      border: 1px solid #2A2A3E;
+      color: #DDD;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .ia-action-btn:active { transform: scale(0.95); }
+    .ia-action-btn:hover { border-color: #E63946; }
+
+    .ia-input-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px 8px;
+      background: #0D0D0D;
+      border-top: 1px solid #2A2A3E;
+      align-items: flex-end;
+    }
+    .ia-input {
+      flex: 1;
+      background: #1A1A2E;
+      border: 1px solid #2A2A3E;
+      border-radius: 25px;
+      padding: 12px 18px;
+      color: #FFF;
+      font-size: 15px;
+      outline: none;
+      resize: none;
+      max-height: 100px;
+      font-family: inherit;
+    }
+    .ia-input:focus { border-color: #E63946; }
+    .ia-input::placeholder { color: #666; }
+
+    .ia-send {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #E63946;
+      border: none;
+      color: #FFF;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .ia-send:active { opacity: 0.7; }
+    .ia-send:disabled { opacity: 0.4; }
+
+    .ia-typing {
+      align-self: flex-start;
+      background: #1A1A2E;
+      border: 1px solid #2A2A3E;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      padding: 14px 20px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .ia-typing span {
+      width: 8px;
+      height: 8px;
+      background: #666;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+    .ia-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .ia-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); background: #666; }
+      30% { transform: translateY(-6px); background: #E63946; }
+    }
+
+    /* ─── IA exercise card ──────────────────────────────────── */
+    .ia-ex-card {
+      background: #16213E;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 6px;
+      border-left: 3px solid #E63946;
+    }
+    .ia-ex-card .ex-name { font-weight: 700; font-size: 15px; }
+    .ia-ex-card .ex-meta { color: #E63946; font-size: 13px; margin-top: 2px; }
+    .ia-ex-card .ex-desc { color: #AAA; font-size: 13px; margin-top: 4px; }
+
+    /* ─── Config toast ──────────────────────────────────────── */
+    .ia-config-bar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #1A1A2E;
+      border-bottom: 1px solid #2A2A3E;
+      font-size: 12px;
+      color: #888;
+    }
+    .ia-config-bar input {
+      flex: 1;
+      background: #0D0D0D;
+      border: 1px solid #2A2A3E;
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: #FFF;
+      font-size: 12px;
+      outline: none;
+    }
+    .ia-config-bar .ia-config-save {
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: #E63946;
+      border: none;
+      color: #FFF;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
     /* ─── Responsive ────────────────────────────────────────── */
     @media (min-width: 500px) {
       .lista, .chip-container, .header { max-width: 500px; margin: 0 auto; }
@@ -241,6 +435,9 @@
     <button class="nav-btn" data-section="rutinas" onclick="showSection('rutinas')">
       <span>📋</span> Rutinas
     </button>
+    <button class="nav-btn" data-section="ia" onclick="showSection('ia')">
+      <span>🤖</span> IA
+    </button>
     <button class="nav-btn" data-section="info" onclick="showSection('info')">
       <span>ℹ️</span> Info
     </button>
@@ -266,6 +463,10 @@
 
   <!-- Main App -->
   <script>
+    // ─── Config ────────────────────────────────────────────────
+    const IA_API_BASE = localStorage.getItem('ia_api_base') || 'http://localhost:8765';
+    const IA_MODEL_NAME = 'deepseek-v4-flash-free (gratuito)';
+
     // ─── Base de datos de ejercicios ─────────────────────────
     const EJERCICIOS = {
       Pecho: [
@@ -442,20 +643,24 @@
             <div class="preview">${r.desc}</div>
           </div>
         `).join('');
+      } else if (section === 'ia') {
+        document.querySelector('.chip-container').style.display = 'none';
+        renderIASection(container);
       } else if (section === 'info') {
         document.querySelector('.chip-container').style.display = 'none';
         container.innerHTML = `
           <div class="card" style="text-align:center;padding:32px 20px;">
             <div style="font-size:48px;margin-bottom:12px;">🏋️</div>
-            <h3 style="margin-bottom:8px;">Gym Recomendador v1.0</h3>
+            <h3 style="margin-bottom:8px;">Gym Recomendador v2.0</h3>
             <p style="color:#888;margin-bottom:16px;line-height:1.6;">
-              App para recomendar ejercicios de entrenamiento.
-              Selecciona un grupo muscular y obtén los mejores ejercicios
-              con series, repeticiones y descripción.
+              App para recomendar ejercicios de entrenamiento.<br/>
+              <strong style="color:#E63946;">🤖 Ahora con inteligencia artificial</strong> — 
+              recomendaciones personalizadas con modelo gratuito.
             </p>
             <hr style="border-color:#2A2A3E;margin:16px 0;" />
             <p style="color:#666;font-size:13px;">
               ⚡ 35+ ejercicios · 7 grupos musculares · 4 rutinas predefinidas<br/>
+              🧠 IA: ${IA_MODEL_NAME}<br/>
               📲 Agrega a pantalla de inicio para usarla como app nativa
             </p>
           </div>
@@ -486,6 +691,268 @@
     function closeModal(e) {
       if (e && e.target !== document.getElementById('modalOverlay')) return;
       document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    // ─── IA - Renderizar sección ─────────────────────────────
+    function renderIASection(container) {
+      container.innerHTML = `
+        <div class="ia-container">
+          <div class="ia-config-bar" id="iaConfigBar">
+            <span>🔗</span>
+            <input type="text" id="iaApiUrl" value="${IA_API_BASE}" placeholder="URL del backend IA..." />
+            <button class="ia-config-save" onclick="saveIAConfig()">Guardar</button>
+          </div>
+          <div class="ia-chat" id="iaChat">
+            <div class="ia-welcome" id="iaWelcome">
+              <div class="emoji">🤖</div>
+              <h3>Entrenador IA</h3>
+              <p>Usa inteligencia artificial para crear rutinas personalizadas, adaptar ejercicios a tu nivel y equipo, o resolver tus dudas de entrenamiento.</p>
+              <div class="ia-actions">
+                <button class="ia-action-btn" onclick="iaQuickAction('recomendar')">🏋️ Nueva rutina</button>
+                <button class="ia-action-btn" onclick="iaQuickAction('adaptar')">🔄 Adaptar</button>
+                <button class="ia-action-btn" onclick="iaQuickAction('explicar')">📖 Explicar</button>
+                <button class="ia-action-btn" onclick="iaToggleConfig()">⚙️</button>
+              </div>
+            </div>
+          </div>
+          <div class="ia-input-bar">
+            <textarea class="ia-input" id="iaInput" rows="1" placeholder="Escribe tu consulta..." onkeydown="iaHandleKey(event)"></textarea>
+            <button class="ia-send" id="iaSendBtn" onclick="iaSendMessage()">➤</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('iaInput').focus();
+    }
+
+    // ─── IA - Config ─────────────────────────────────────────
+    function iaToggleConfig() {
+      const bar = document.getElementById('iaConfigBar');
+      bar.style.display = bar.style.display === 'flex' ? 'none' : 'flex';
+    }
+    function saveIAConfig() {
+      const url = document.getElementById('iaApiUrl').value.trim();
+      if (url) {
+        localStorage.setItem('ia_api_base', url);
+        addIAMessage('ai', '✅ URL del backend actualizada a: ' + url + '\n\n*Nota: el servidor debe estar corriendo en esa dirección.*');
+      }
+      document.getElementById('iaConfigBar').style.display = 'none';
+    }
+
+    // ─── IA - Añadir mensaje al chat ─────────────────────────
+    function addIAMessage(role, content) {
+      const chat = document.getElementById('iaChat');
+      // Ocultar bienvenida al primer mensaje
+      const welcome = document.getElementById('iaWelcome');
+      if (welcome) welcome.style.display = 'none';
+
+      const div = document.createElement('div');
+      div.className = 'ia-message ' + role;
+      div.innerHTML = content.replace(/\n/g, '<br/>');
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showIAThinking() {
+      const chat = document.getElementById('iaChat');
+      const div = document.createElement('div');
+      div.className = 'ia-typing';
+      div.id = 'iaTyping';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function hideIAThinking() {
+      const el = document.getElementById('iaTyping');
+      if (el) el.remove();
+    }
+
+    function setIAInputState(disabled) {
+      document.getElementById('iaInput').disabled = disabled;
+      document.getElementById('iaSendBtn').disabled = disabled;
+    }
+
+    // ─── IA - Llamar al backend ──────────────────────────────
+    async function callIABackend(endpoint, payload) {
+      const base = localStorage.getItem('ia_api_base') || 'http://localhost:8765';
+      const url = base.replace(/\/+$/, '') + endpoint;
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`Error HTTP ${resp.status}: ${text}`);
+        }
+        return await resp.json();
+      } catch (e) {
+        throw new Error('No se pudo conectar con la IA. Asegúrate de que el servidor esté corriendo.\n\nDetalle: ' + e.message);
+      }
+    }
+
+    function formatAIResponse(data) {
+      // Si es respuesta de chat simple
+      if (data.respuesta) {
+        return data.respuesta;
+      }
+      // Si es JSON estructurado
+      if (typeof data === 'object' && !Array.isArray(data)) {
+        let html = '';
+        if (data.titulo) html += `<strong>📋 ${data.titulo}</strong><br/><br/>`;
+        if (data.descripcion) html += data.descripcion + '<br/><br/>';
+        if (data.frecuencia) html += `<strong>📅 Frecuencia:</strong> ${data.frecuencia}<br/><br/>`;
+        if (data.calentamiento) html += `<strong>🔥 Calentamiento:</strong><br/>${data.calentamiento}<br/><br/>`;
+        if (data.dias && Array.isArray(data.dias)) {
+          data.dias.forEach(d => {
+            html += `<strong>${d.nombre || 'Día'}</strong>`;
+            if (d.enfoque) html += ` — ${d.enfoque}`;
+            html += '<br/>';
+            if (d.ejercicios && Array.isArray(d.ejercicios)) {
+              d.ejercicios.forEach(ex => {
+                html += `<div class="ia-ex-card">`;
+                html += `<div class="ex-name">${ex.nombre}</div>`;
+                html += `<div class="ex-meta">${ex.series || '?'} series × ${ex.reps || '?'} · ${ex.descanso || ''}</div>`;
+                if (ex.notas) html += `<div class="ex-desc">💡 ${ex.notas}</div>`;
+                html += `</div>`;
+              });
+            }
+            html += '<br/>';
+          });
+        }
+        if (data.consejos && Array.isArray(data.consejos)) {
+          html += `<strong>💡 Consejos:</strong><br/>`;
+          data.consejos.forEach(c => html += `• ${c}<br/>`);
+          html += '<br/>';
+        }
+        if (data.progresion) html += `<strong>📈 Progresión:</strong><br/>${data.progresion}<br/>`;
+        if (data.ejercicio_original) html += `<strong>Ejercicio original:</strong> ${data.ejercicio_original}<br/>`;
+        if (data.ejercicio_adaptado) html += `<strong>✅ Adaptado:</strong> ${data.ejercicio_adaptado}<br/>`;
+        if (data.cambios && Array.isArray(data.cambios)) {
+          html += `<br/><strong>Cambios:</strong><br/>`;
+          data.cambios.forEach(c => html += `• ${c}<br/>`);
+        }
+        if (data.alternativas && Array.isArray(data.alternativas)) {
+          html += `<br/><strong>Alternativas:</strong><br/>`;
+          data.alternativas.forEach(a => html += `• ${a}<br/>`);
+        }
+        if (data.puntos_clave && Array.isArray(data.puntos_clave)) {
+          html += `<br/><strong>🎯 Puntos clave:</strong><br/>`;
+          data.puntos_clave.forEach(p => html += `• ${p}<br/>`);
+        }
+        if (data.errores_comunes && Array.isArray(data.errores_comunes)) {
+          html += `<br/><strong>⚠️ Errores comunes:</strong><br/>`;
+          data.errores_comunes.forEach(e => html += `• ${e}<br/>`);
+        }
+        if (data.beneficios && Array.isArray(data.beneficios)) {
+          html += `<br/><strong>✅ Beneficios:</strong><br/>`;
+          data.beneficios.forEach(b => html += `• ${b}<br/>`);
+        }
+        if (data.explicacion) html += `<br/>📝 ${data.explicacion}`;
+        return html || JSON.stringify(data, null, 2);
+      }
+      if (typeof data === 'string') return data;
+      if (data.raw) return data.raw;
+      return JSON.stringify(data, null, 2);
+    }
+
+    // ─── IA - Enviar mensaje ─────────────────────────────────
+    async function iaSendMessage() {
+      const input = document.getElementById('iaInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      addIAMessage('user', text);
+      input.value = '';
+      input.style.height = 'auto';
+      setIAInputState(true);
+      showIAThinking();
+
+      try {
+        const result = await callIABackend('/api/chat', { mensaje: text });
+        if (result.success) {
+          const formatted = formatAIResponse(result.data);
+          addIAMessage('ai', formatted);
+        } else {
+          addIAMessage('ai', '⚠️ Error: ' + (result.error || 'Respuesta inesperada'));
+        }
+      } catch (e) {
+        addIAMessage('ai', '❌ ' + e.message);
+      } finally {
+        hideIAThinking();
+        setIAInputState(false);
+        document.getElementById('iaInput').focus();
+      }
+    }
+
+    function iaHandleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        iaSendMessage();
+      }
+      // Auto-resize
+      const el = e.target;
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+    }
+
+    // ─── IA - Acciones rápidas ───────────────────────────────
+    function iaQuickAction(action) {
+      const welcome = document.getElementById('iaWelcome');
+      if (welcome) welcome.style.display = 'none';
+
+      const prompts = {
+        recomendar: `Hola, necesito una rutina de entrenamiento personalizada.
+
+Mi objetivo es: hipertrofia (ganar músculo)
+Mi nivel es: intermedio
+Días disponibles: 4 por semana
+Equipo disponible: completo (gimnasio)
+Duración por sesión: 45-60 minutos
+
+Por favor, recomiéndame una rutina completa con ejercicios, series, repeticiones y descanso.`,
+
+        adaptar: `Necesito adaptar un ejercicio para mi nivel.
+
+Ejercicio: Press banca con barra
+Mi nivel actual: intermedio
+Quiero adaptarlo a: principiante
+Equipo disponible: mancuernas y banco
+
+¿Qué variante me recomiendas?`,
+
+        explicar: `Explica el ejercicio: Sentadilla (Squat)
+
+Quiero saber:
+- Técnica correcta paso a paso
+- Errores comunes
+- Beneficios principales
+- Variantes para principiante e intermedio`
+      };
+
+      const text = prompts[action] || 'Hola, ¿puedes ayudarme con mi entrenamiento?';
+      addIAMessage('user', text);
+      setIAInputState(true);
+      showIAThinking();
+
+      callIABackend('/api/chat', { mensaje: text })
+        .then(result => {
+          if (result.success) {
+            const formatted = formatAIResponse(result.data);
+            addIAMessage('ai', formatted);
+          } else {
+            addIAMessage('ai', '⚠️ Error: ' + (result.error || 'Respuesta inesperada'));
+          }
+        })
+        .catch(e => {
+          addIAMessage('ai', '❌ ' + e.message);
+        })
+        .finally(() => {
+          hideIAThinking();
+          setIAInputState(false);
+          document.getElementById('iaInput').focus();
+        });
     }
 
     // ─── Iniciar app ─────────────────────────────────────────
